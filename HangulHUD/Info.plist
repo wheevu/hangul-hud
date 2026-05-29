@@ -6,6 +6,8 @@
     <string>Hangul HUD</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
     <string>com.local.HangulHUD</string>
     <key>CFBundleName</key>

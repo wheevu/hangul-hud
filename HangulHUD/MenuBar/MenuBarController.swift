@@ -17,13 +17,15 @@ final class MenuBarController: NSObject {
     }
 
     func configure() {
-        statusItem.button?.title = "ㅎ"
+        statusItem.button?.title = "한"
         statusItem.button?.toolTip = "Hangul HUD"
         rebuildMenu()
 
         Publishers.MergeMany(
             preferences.$compactMode.map { _ in () }.eraseToAnyPublisher(),
             preferences.$clickThrough.map { _ in () }.eraseToAnyPublisher(),
+            preferences.$shiftLayerMonitoring.map { _ in () }.eraseToAnyPublisher(),
+            preferences.$keycapFont.map { _ in () }.eraseToAnyPublisher(),
             preferences.$opacity.map { _ in () }.eraseToAnyPublisher()
         )
         .sink { [weak self] in self?.rebuildMenu() }
@@ -46,6 +48,14 @@ final class MenuBarController: NSObject {
 
         menu.addItem(toggleItem(title: "Compact Mode", action: #selector(toggleCompactMode), state: preferences.compactMode))
         menu.addItem(toggleItem(title: "Click-through", action: #selector(toggleClickThrough), state: preferences.clickThrough))
+        let shiftItem = toggleItem(
+            title: "Live Shift Layer",
+            action: #selector(toggleShiftLayerMonitoring),
+            state: preferences.shiftLayerMonitoring
+        )
+        shiftItem.toolTip = "Optional: monitors Shift modifier state globally. Does not read typed characters."
+        menu.addItem(shiftItem)
+        menu.addItem(keycapFontMenuItem())
         menu.addItem(opacitySliderItem())
         menu.addItem(.separator())
         let quitItem = NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q")
@@ -87,8 +97,28 @@ final class MenuBarController: NSObject {
         return item
     }
 
+    private func keycapFontMenuItem() -> NSMenuItem {
+        let item = NSMenuItem(title: "Keycap Font", action: nil, keyEquivalent: "")
+        let submenu = NSMenu()
+        for font in KeycapFont.allCases {
+            let fontItem = NSMenuItem(title: font.displayName, action: #selector(selectKeycapFont(_:)), keyEquivalent: "")
+            fontItem.target = self
+            fontItem.representedObject = font.rawValue
+            fontItem.state = preferences.keycapFont == font ? .on : .off
+            submenu.addItem(fontItem)
+        }
+        item.submenu = submenu
+        return item
+    }
+
     @objc private func toggleCompactMode() { preferences.compactMode.toggle() }
     @objc private func toggleClickThrough() { preferences.clickThrough.toggle() }
+    @objc private func toggleShiftLayerMonitoring() { preferences.shiftLayerMonitoring.toggle() }
     @objc private func opacityChanged(_ sender: NSSlider) { preferences.opacity = sender.doubleValue }
+    @objc private func selectKeycapFont(_ sender: NSMenuItem) {
+        guard let rawValue = sender.representedObject as? String,
+              let font = KeycapFont(rawValue: rawValue) else { return }
+        preferences.keycapFont = font
+    }
     @objc private func quit() { NSApp.terminate(nil) }
 }

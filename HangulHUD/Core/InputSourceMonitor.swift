@@ -29,9 +29,13 @@ final class InputSourceMonitor {
 
     private var timer: Timer?
     private var lastSource: InputSourceInfo?
+    private var isRunning = false
     private let log = Logger(subsystem: "com.local.HangulHUD", category: "input")
 
     func start() {
+        guard !isRunning else { return }
+        isRunning = true
+
         let name = NSNotification.Name(kTISNotifySelectedKeyboardInputSourceChanged as String)
         DistributedNotificationCenter.default().addObserver(
             self,
@@ -50,9 +54,11 @@ final class InputSourceMonitor {
     }
 
     func stop() {
+        guard isRunning || timer != nil else { return }
         DistributedNotificationCenter.default().removeObserver(self)
         timer?.invalidate()
         timer = nil
+        isRunning = false
     }
 
     func currentInputSource() -> InputSourceInfo {
@@ -77,6 +83,7 @@ final class InputSourceMonitor {
         guard force || source != lastSource else { return }
         lastSource = source
 
+        #if DEBUG
         log.debug("""
             Input source — name: \(source.localizedName), \
             id: \(source.inputSourceID), \
@@ -84,17 +91,22 @@ final class InputSourceMonitor {
             category: \(source.category), type: \(source.type), \
             isKorean: \(source.isKorean)
             """)
+        #endif
 
         onInputSourceChanged?(source)
     }
+
+    deinit { stop() }
 }
 
 private func stringProperty(_ source: TISInputSource, _ key: CFString) -> String {
     guard let value = TISGetInputSourceProperty(source, key) else { return "" }
-    return Unmanaged<CFString>.fromOpaque(value).takeUnretainedValue() as String
+    let property = Unmanaged<CFTypeRef>.fromOpaque(value).takeUnretainedValue()
+    return property as? String ?? ""
 }
 
 private func stringArrayProperty(_ source: TISInputSource, _ key: CFString) -> [String] {
     guard let value = TISGetInputSourceProperty(source, key) else { return [] }
-    return Unmanaged<CFArray>.fromOpaque(value).takeUnretainedValue() as? [String] ?? []
+    let property = Unmanaged<CFTypeRef>.fromOpaque(value).takeUnretainedValue()
+    return property as? [String] ?? []
 }

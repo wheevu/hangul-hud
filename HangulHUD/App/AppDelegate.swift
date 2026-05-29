@@ -14,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        KeycapFontRegistrar.registerBundledFonts()
 
         // Screenshot mode
         let args = CommandLine.arguments
@@ -21,6 +22,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             let themeRaw = args[idx + 1]
             if let theme = Theme(rawValue: themeRaw) {
                 preferences.theme = theme
+            }
+            if let fontIdx = args.firstIndex(of: "--font"), args.count > fontIdx + 1 {
+                let fontRaw = args[fontIdx + 1]
+                if let font = KeycapFont(rawValue: fontRaw) {
+                    preferences.keycapFont = font
+                }
             }
             screenshotPath = args[idx + 2]
             screenshotShift = args.contains("--shift")

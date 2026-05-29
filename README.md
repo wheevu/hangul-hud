@@ -4,12 +4,24 @@ A tiny native macOS menu-bar utility that shows a floating Korean keyboard overl
 
 *With this, I can now spam in 한글.*
 
-<p align="center"><img src="assets/glass.png" alt="Glass theme" width="60%"></p>
+<p align="center"><img src="assets/logo.png" alt="Hangul HUD logo" width="25%" style="margin-right: 24px;"> <img src="assets/glass.png" alt="Glass theme" width="55%"></p>
 
 ## Themes
 
 
   <p align="center"><img src="assets/light.png" alt="Light theme" width="50%"> <img src="assets/dark.png" alt="Dark theme" width="50%"></p>
+
+## Fonts
+
+<p align="center"><img src="assets/dark_style1.png" alt="Dark theme with Style 1 font" width="50%"> <img src="assets/light_style2.png" alt="Light theme with Style 2 font" width="50%"></p>
+
+Three keycap font options are available from the menu bar:
+
+- **Default** — system rounded font
+- **Style 1** — Ownglyph mongmongdays (cute handwritten style)
+- **Style 2** — OkDanDan Bold (bold rounded style)
+
+The selected font persists across launches.
 
 ## Features
 
@@ -25,3 +37,10 @@ A tiny native macOS menu-bar utility that shows a floating Korean keyboard overl
 - **Opacity slider** — adjustable from the menu bar dropdown.
 - **Position memory** — drag the HUD anywhere; position persists across launches.
 - **Menu bar icon** — turns orange when Korean input is active.
+
+## Privacy & permissions
+
+- Hangul HUD does **not** use networking and does not send data anywhere.
+- Korean input detection uses macOS input-source APIs; it does not read typed text.
+- **Live Shift Layer** is optional. When enabled, the app monitors global modifier-flag changes so the HUD can show Shift variants while you type in other apps. It only checks whether Shift is pressed; it does not inspect characters or key contents.
+- If you do not enable Live Shift Layer, the app should not need Accessibility or Input Monitoring permission for normal input-source detection.

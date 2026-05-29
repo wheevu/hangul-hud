@@ -7,6 +7,7 @@ struct OverlayView: View {
     var body: some View {
         let compact = preferences.compactMode
         let theme = preferences.theme
+        let keycapFont = preferences.keycapFont
 
         VStack(alignment: .leading, spacing: compact ? 6 : 10) {
             HStack(spacing: 6) {
@@ -31,7 +32,7 @@ struct OverlayView: View {
                 ForEach(Array(KoreanTwoSetLayout.rows.enumerated()), id: \.offset) { index, row in
                     HStack(spacing: compact ? 4 : 6) {
                         ForEach(row) { key in
-                            KeycapView(key: key, compact: compact, theme: theme)
+                            KeycapView(key: key, compact: compact, theme: theme, keycapFont: keycapFont)
                         }
                     }
                     .padding(.leading, rowIndent(index: index, compact: compact))

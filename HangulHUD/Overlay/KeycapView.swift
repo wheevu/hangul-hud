@@ -4,12 +4,13 @@ struct KeycapView: View {
     let key: HangulKey
     let compact: Bool
     let theme: Theme
+    let keycapFont: KeycapFont
     @EnvironmentObject var shiftState: ShiftState
 
     var body: some View {
         let hasShift = key.shiftHangul != nil
         let active = shiftState.isShiftPressed && hasShift
-        let mainChar = active ? key.shiftHangul! : key.hangul
+        let mainChar = active ? (key.shiftHangul ?? key.hangul) : key.hangul
 
         ZStack(alignment: .top) {
             let bg = RoundedRectangle(cornerRadius: compact ? 6 : 8, style: .continuous)
@@ -28,7 +29,7 @@ struct KeycapView: View {
 
             // Main Hangul — swaps character + color when Shift is held
             Text(mainChar)
-                .font(.system(size: compact ? 16 : 22, weight: .semibold, design: .rounded))
+                .font(keycapFont.font(size: compact ? 17 : 23))
                 .foregroundStyle(active ? theme.shiftAccent : theme.hangulColor)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
@@ -45,7 +46,7 @@ struct KeycapView: View {
             // Shift Label (Top Right) — only shown when shift is NOT held
             if !shiftState.isShiftPressed, let shift = key.shiftHangul {
                 Text(shift)
-                    .font(.system(size: compact ? 8 : 9, weight: .bold, design: .rounded))
+                    .font(keycapFont.font(size: compact ? 9 : 10, weight: .bold))
                     .foregroundStyle(theme.shiftAccent)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                     .padding(.top, compact ? 3 : 4)

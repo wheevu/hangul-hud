@@ -11,7 +11,8 @@ let package = Package(
         .executableTarget(
             name: "HangulHUD",
             path: "HangulHUD",
-            exclude: ["Info.plist"]
+            exclude: ["Info.plist"],
+            resources: [.process("Resources")]
         )
     ]
 )
