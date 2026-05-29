@@ -4,7 +4,7 @@ A tiny native macOS menu-bar utility that shows a floating Korean keyboard overl
 
 *With this, I can now spam in 한글.*
 
-<p align="center"><img src="assets/logo.png" alt="Hangul HUD logo" width="25%" style="margin-right: 24px;"> <img src="assets/glass.png" alt="Glass theme" width="55%"></p>
+<p align="center"><img src="assets/logo.png" alt="Hangul HUD logo" width="25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="assets/glass.png" alt="Glass theme" width="55%"></p>
 
 ## Themes
 
