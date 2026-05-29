@@ -98,10 +98,6 @@ release() {
 
   build_dmg
 
-  # Create tag
-  echo "Creating tag $version..."
-  git tag "$version"
-
   # Build release notes
   if [ -z "$notes" ]; then
     notes_file=$(mktemp)
