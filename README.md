@@ -1,10 +1,10 @@
 # Hangul HUD 🇰🇷
 
-A tiny native macOS menu-bar utility that shows a floating Korean keyboard overlay whenever Korean input is active.
+A macOS menu-bar utility that shows a floating Korean keyboard overlay whenever Korean input is active.
 
 *With this, I can now spam in 한글.*
 
-Check out the app here: [**wheevu.dev/hangul-hud**](https://wheevu.dev/hangul-hud)
+Check out the app [here.](https://wheevu.dev/hangul-hud)
 
 <p align="center"><img src="assets/logo.png" alt="Hangul HUD logo" width="25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="assets/glass.png" alt="Glass theme" width="55%"></p>
 
