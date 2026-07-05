@@ -6,12 +6,15 @@ A macOS menu-bar utility that shows a floating Korean keyboard overlay whenever 
 
 Check out the app [here.](https://wheevu.dev/hangul-hud)
 
-<p align="center"><img src="assets/logo.png" alt="Hangul HUD logo" width="25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="assets/glass.png" alt="Glass theme" width="55%"></p>
+<p align="center"><img src="assets/logo.png" alt="Hangul HUD logo" width="25%">
+
+<p align="center">&nbsp; <img src="assets/demo.gif" alt="Hangul HUD demo showing the floating Korean keyboard overlay in use" width="85%"> </p>
+
 
 ## Themes
 
 
-  <p align="center"><img src="assets/light.png" alt="Light theme" width="50%"> <img src="assets/dark.png" alt="Dark theme" width="50%"></p>
+  <p align="center"><img src="assets/light.png" alt="Light theme" width="50%"> &nbsp; <img src="assets/dark.png" alt="Dark theme" width="50%">&nbsp; <img src="assets/glass.png" alt="Glass theme" width="50%"></p>
 
 ## Fonts
 
