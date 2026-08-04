@@ -17,6 +17,7 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     private var cancellables = Set<AnyCancellable>()
     private var didConfigure = false
     private var wantsVisible = false
+    var persistsFrame = true
 
     init(preferences: Preferences) {
         self.preferences = preferences
@@ -81,8 +82,14 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     func show() {
         guard let window, didConfigure else { return }
         wantsVisible = true
-        window.alphaValue = preferences.opacity
         window.ignoresMouseEvents = preferences.clickThrough
+        // Replacing the in-flight fade-out animation (same key, duration 0)
+        // cancels it: otherwise the window would keep animating to alpha 0
+        // and stay ordered-in but invisible, swallowing clicks.
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0
+            window.animator().alphaValue = preferences.opacity
+        }
         window.orderFrontRegardless()
     }
 
@@ -123,7 +130,8 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
     }
 
     func persistFrame() {
-        if let frame = window?.frame { preferences.overlayFrame = frame }
+        guard persistsFrame, let frame = window?.frame else { return }
+        preferences.overlayFrame = frame
     }
 
     func windowDidMove(_ notification: Notification) { persistFrame() }
@@ -145,8 +153,12 @@ final class OverlayWindowController: NSWindowController, NSWindowDelegate {
 
     private static func visibleFrame(for frame: NSRect) -> NSRect {
         let screens = NSScreen.screens
-        let visibleFrames = screens.map(\.visibleFrame)
-        guard !visibleFrames.contains(where: { $0.intersects(frame) }) else { return frame }
+        // Keep the frame only if its center sits inside a visible screen area.
+        // A frame that merely touches a screen (e.g. left behind after a display
+        // was unplugged or the resolution changed) would otherwise stay mostly
+        // off-screen and be effectively invisible.
+        let isPlaced = screens.contains { $0.visibleFrame.contains(NSPoint(x: frame.midX, y: frame.midY)) }
+        guard !isPlaced else { return frame }
 
         let fallbackScreen = NSScreen.main ?? screens.first
         guard let visibleFrame = fallbackScreen?.visibleFrame else { return frame }

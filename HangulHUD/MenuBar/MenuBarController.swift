@@ -8,6 +8,7 @@ final class MenuBarController: NSObject {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private var cancellables = Set<AnyCancellable>()
     private var statusTitle = ""
+    private weak var opacityPercentLabel: NSTextField?
 
     init(preferences: Preferences, overlayController: OverlayWindowController, inputSourceMonitor: InputSourceMonitor) {
         self.preferences = preferences
@@ -25,11 +26,18 @@ final class MenuBarController: NSObject {
             preferences.$compactMode.map { _ in () }.eraseToAnyPublisher(),
             preferences.$clickThrough.map { _ in () }.eraseToAnyPublisher(),
             preferences.$shiftLayerMonitoring.map { _ in () }.eraseToAnyPublisher(),
-            preferences.$keycapFont.map { _ in () }.eraseToAnyPublisher(),
-            preferences.$opacity.map { _ in () }.eraseToAnyPublisher()
+            preferences.$keycapFont.map { _ in () }.eraseToAnyPublisher()
         )
         .sink { [weak self] in self?.rebuildMenu() }
         .store(in: &cancellables)
+
+        // Updating opacity must not rebuild the menu: rebuilding replaces the menu
+        // (and its slider view) on every tick while the user is dragging the slider.
+        preferences.$opacity
+            .sink { [weak self] opacity in
+                self?.opacityPercentLabel?.stringValue = "\(Int(opacity * 100))%"
+            }
+            .store(in: &cancellables)
     }
 
     func refreshStatusTitle(source: InputSourceInfo) {
@@ -88,6 +96,7 @@ final class MenuBarController: NSObject {
         percentLabel.sizeToFit()
         percentLabel.frame.origin = NSPoint(x: 220, y: 30)
         container.addSubview(percentLabel)
+        opacityPercentLabel = percentLabel
 
         let slider = NSSlider(value: preferences.opacity, minValue: 0.35, maxValue: 1.0, target: self, action: #selector(opacityChanged(_:)))
         slider.frame = NSRect(x: 18, y: 4, width: 224, height: 24)

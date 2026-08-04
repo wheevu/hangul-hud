@@ -68,6 +68,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func runScreenshotMode() {
+        let previousTheme = preferences.theme
+        let previousKeycapFont = preferences.keycapFont
+        // Screenshot mode is a capture tool; it must not change the user's
+        // saved theme/font or persist the throwaway window position.
+        overlayController.persistsFrame = false
         overlayController.configure()
         overlayController.show()
         if screenshotShift {
@@ -76,6 +81,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Wait for SwiftUI to render, then capture and exit
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self, let path = self.screenshotPath else { NSApp.terminate(nil); return }
+            self.preferences.theme = previousTheme
+            self.preferences.keycapFont = previousKeycapFont
             _ = self.overlayController.captureWindow(to: path)
             NSApp.terminate(nil)
         }

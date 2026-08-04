@@ -53,9 +53,14 @@ struct OverlayView: View {
     }
 
     private func rowIndent(index: Int, compact: Bool) -> CGFloat {
+        // Rows are indented so they stay centered under the top row:
+        // normal: 10 keys x44 + 9x6 = 494 wide; row 1 = 444, row 2 = 344
+        //   -> (494-444)/2 = 25, (494-344)/2 = 75
+        // compact: 10 keys x32 + 9x4 = 356 wide; row 1 = 320, row 2 = 248
+        //   -> (356-320)/2 = 18, (356-248)/2 = 54
         switch index {
-        case 1: return compact ? 18 : 27
-        case 2: return compact ? 52 : 78
+        case 1: return compact ? 18 : 25
+        case 2: return compact ? 54 : 75
         default: return 0
         }
     }
