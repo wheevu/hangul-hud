@@ -6,6 +6,18 @@ A macOS menu-bar utility that shows a floating Korean keyboard overlay whenever 
 
 Check out the app [here.](https://wheevu.dev/hangul-hud)
 
+## Requirements
+
+- macOS 13 Ventura or newer
+- Swift 5.9 or newer with Xcode Command Line Tools
+
+From the repository root:
+
+```bash
+swift run HangulHUD  # run from source
+./build.sh           # build a release .app and DMG
+```
+
 <p align="center"><img src="assets/logo.png" alt="Hangul HUD logo" width="25%">
 
 <p align="center">&nbsp; <img src="assets/demo.gif" alt="Hangul HUD demo showing the floating Korean keyboard overlay in use" width="85%"> </p>
@@ -35,7 +47,7 @@ The selected font persists across launches.
 
 <p align="center"><img src="assets/dark_shift.png" alt="Dark theme with Shift held" width="50%"></p>
 
-- **Auto-detection** — overlay appears automatically when any Korean input source is active (2-Set, 3-Set, Romaja, etc.), hides when switching away.
+- **Auto-detection** - visibility detects any Korean input source (2-Set, 3-Set, Romaja, etc.), while the displayed keys always use the Korean 2-set mapping.
 - **Floating overlay** — always on top, stays visible while typing in other apps, movable by dragging.
 - **Compact mode** — hides English labels for a smaller, cleaner HUD.
 - **Click-through** — when enabled, clicks pass through the HUD to the app behind it.
