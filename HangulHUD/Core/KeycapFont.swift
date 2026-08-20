@@ -43,11 +43,36 @@ enum KeycapFontRegistrar {
         guard !didRegister else { return }
         didRegister = true
 
+        let directories = bundledFontDirectories()
         for filename in ["OwnglyphMongmongdays", "OkDanDan-Bold"] {
-            guard let url = Bundle.module.url(forResource: filename, withExtension: "ttf") else {
-                continue
-            }
+            guard let url = existingFontURL(named: filename, in: directories) else { continue }
             CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
         }
+    }
+
+    private static func existingFontURL(named filename: String, in directories: [URL]) -> URL? {
+        for directory in directories {
+            let url = directory.appendingPathComponent(filename).appendingPathExtension("ttf")
+            if FileManager.default.fileExists(atPath: url.path) {
+                return url
+            }
+        }
+        return nil
+    }
+
+    /// Directories that may hold the SwiftPM resource bundle containing the
+    /// bundled fonts. `Bundle.module` is intentionally avoided: its generated
+    /// accessor fatal-errors when the bundle is not found beside the app, which
+    /// crashes the packaged app before it reaches the run loop.
+    private static func bundledFontDirectories() -> [URL] {
+        let bundleName = "HangulHUD_HangulHUD.bundle"
+        var directories: [URL] = []
+        if let resourcesURL = Bundle.main.resourceURL {
+            directories.append(resourcesURL.appendingPathComponent(bundleName))
+        }
+        // Covers `swift run` and a bare binary launched from the build dir,
+        // where SwiftPM places the resource bundle next to the executable.
+        directories.append(Bundle.main.bundleURL.appendingPathComponent(bundleName))
+        return directories
     }
 }

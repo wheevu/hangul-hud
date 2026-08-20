@@ -2,7 +2,7 @@
 set -euo pipefail
 
 APP_NAME="HangulHUD"
-BUILD_DIR=".build"
+BIN_DIR="$(swift build -c release --show-bin-path)"
 APP_BUNDLE="${APP_NAME}.app"
 CONTENTS="${APP_BUNDLE}/Contents"
 MACOS_DIR="${CONTENTS}/MacOS"
@@ -13,7 +13,7 @@ build_dmg() {
   swift build -c release 2>&1
 
   # Find the built binary
-  BINARY="${BUILD_DIR}/release/${APP_NAME}"
+  BINARY="${BIN_DIR}/${APP_NAME}"
   if [ ! -f "$BINARY" ]; then
     echo "Error: Binary not found at ${BINARY}"
     exit 1
@@ -34,11 +34,15 @@ build_dmg() {
   cp "HangulHUD/Resources/AppIcon.icns" "${RESOURCES_DIR}/AppIcon.icns"
 
   # Copy SwiftPM resource bundles, including bundled fonts.
-  for RESOURCE_BUNDLE in "${BUILD_DIR}"/release/*.bundle; do
+  for RESOURCE_BUNDLE in "${BIN_DIR}"/*.bundle; do
     if [ -d "${RESOURCE_BUNDLE}" ]; then
       cp -R "${RESOURCE_BUNDLE}" "${RESOURCES_DIR}/"
     fi
   done
+  if [ ! -d "${RESOURCES_DIR}/"*"${APP_NAME}".bundle ]; then
+    echo "Error: No resource bundle found in ${BIN_DIR}"
+    exit 1
+  fi
 
   # Create Info.plist (resolve EXECUTABLE_NAME placeholder)
   sed "s/\$(EXECUTABLE_NAME)/${APP_NAME}/g" "HangulHUD/Info.plist" > "${CONTENTS}/Info.plist"
